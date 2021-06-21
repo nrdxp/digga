@@ -13,13 +13,13 @@
       };
       devshell.url = "github:numtide/devshell";
       utils.url = "github:gytis-ivaskevicius/flake-utils-plus/staging";
-      nixlib.url = "github:divnix/nixpkgs.lib";
-
-      # We only use the nixosModules output which only needs nixpkgs lib
-      # TODO: don't pull another 'nixpkgs' when only nixpkgs lib is needed
+      nixlib.url = "github:nix-community/nixpkgs.lib";
       nixos-generators = {
         url = "github:nix-community/nixos-generators";
         inputs = {
+          nixlib.follows = "nixlib";
+          # We don't transitorily use those
+          # They are here for a cleaner lockfile, only
           nixpkgs.follows = "nixpkgs";
           utils.follows = "utils";
         };

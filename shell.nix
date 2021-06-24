@@ -13,10 +13,19 @@ let
     command = ''
       set -e
       cd $DEVSHELL_ROOT/examples/${name}
+      # ensure: replace input
+      original=$(grep -o '"github:divnix/digga.*"' flake.nix) || true
+      sed -i 's|"github:divnix/digga/.*"|"path:../../"|g' flake.nix
+      
       ${patchedNixUnstable}/bin/nix flake lock --update-input digga || git rm -f flake.lock
       ${patchedNixUnstable}/bin/nix flake show || git rm -f flake.lock
       ${patchedNixUnstable}/bin/nix flake check || git rm -f flake.lock
       git rm -f flake.lock
+
+      # ensure: restore input
+      if [ -z $original ] then
+        sed -i "s|\"path:../../\"|$original|g" flake.nix
+      fi
     '';
   };
 
@@ -56,9 +65,9 @@ devshell.mkShell {
       command = "fd --extension nix --exec nix-instantiate --parse --quiet {} >/dev/null";
     }
 
-    (test "classicalDevos")
+    (test "downstream")
     (test "groupByConfig")
-    (test "all" // { command = "check-classicalDevos && groupByConfig"; })
+    (test "all" // { command = "check-downstream && groupByConfig"; })
 
   ];
 }

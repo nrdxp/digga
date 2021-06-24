@@ -105,9 +105,9 @@ lib.systemFlake (lib.mergeAny
               if (
                 (builtins.hasAttr "homeConfigurations" self) &&
                 (self.homeConfigurations != { })
-              ) then {
-                homeConfigurations = lib.mapAttrs (n: v: v.activationPackage) self.homeConfigurations;
-              } else { }
+              ) then
+                lib.mapAttrs (n: v: v.activationPackage) self.homeConfigurations
+              else { }
             )
             //
             (

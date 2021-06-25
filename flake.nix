@@ -69,7 +69,7 @@
             };
           };
 
-          pkgs-lib = import ./src/pkgs-lib {
+          flkShell =  import ./flkShell {
             lib = combinedLib;
             inherit deploy devshell;
           };
@@ -103,11 +103,15 @@
 
     {
       lib = with lib; utils.lib // {
-        inherit attrs lists modules importers generators;
+        inherit modules importers;
         inherit (lib)
           mkFlake
           mkDeployNodes
-          mkHomeConfigurations;
+          mkHomeConfigurations
+          ;
+        inherit (lib.tests)
+          mkTest
+          ;
       };
 
       # digga-local use

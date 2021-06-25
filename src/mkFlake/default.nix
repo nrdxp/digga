@@ -158,9 +158,9 @@ lib.systemFlake (lib.mergeAny
             )
           ;
 
-          devShell = lib.pkgs-lib.shell {
+          devShell = lib.flkShell {
             pkgs = defaultChannel;
-            extraModules = cfg.devshell.modules ++ cfg.devshell.externalModules;
+            devshellModules = cfg.devshell.modules ++ cfg.devshell.externalModules;
           };
 
         };

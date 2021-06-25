@@ -1,6 +1,6 @@
 { lib, devshell, deploy }:
 
-{ pkgs, extraModules ? [ ] }:
+{ pkgs, devshellModules ? [ ] }:
 let
   overlays = [
     devshell.overlay
@@ -29,7 +29,7 @@ let
 
   configuration = {
     imports = [ (pkgs'.devshell.importTOML ./devshell.toml) ]
-      ++ extraModules;
+      ++ devshellModules;
 
     packages = with installPkgs; [
       nixos-install

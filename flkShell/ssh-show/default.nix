@@ -1,11 +1,12 @@
 { stdenv }:
 let
-  name = "flk";
+  name = "ssh-show-ed25519";
+  description = "ssh-show-ed25519 <user@hostName> | Show target host's SSH ed25519 key";
 in
 stdenv.mkDerivation {
   inherit name;
 
-  src = ./flk.sh;
+  src = ./ssh-show.sh;
 
   dontUnpack = true;
   dontBuild = true;
@@ -19,5 +20,5 @@ stdenv.mkDerivation {
     ${stdenv.shell} -n -O extglob $out/bin/${name}
   '';
 
-  meta.description = "Build, deploy, and install NixOS";
+  meta = { inherit description; };
 }

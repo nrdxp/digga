@@ -29,3 +29,8 @@ jobs:
     # Check /examples/*
     - run: nix develop --command -- check-downstream --show-trace
     - run: nix develop --command -- check-groupByConfig --show-trace
+
+    # Check /flkShell
+    - run: cd flkShell && nix develop --command -- flk --show-trace
+    - run: cd flkShell && nix develop --command -- ssh-show-ed25519 --show-trace
+

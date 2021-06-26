@@ -19,7 +19,7 @@ usage () {
   "up" "Generate $DEVSHELL_ROOT/hosts/up-$HOSTNAME.nix" \
   "update [INPUT]" "Update and commit the lock file, or specific input" \
   "get (core|community) [DEST]" "Copy the desired template to DEST" \
-  "build HOST BUILD" "Build a variant of your configuration from system.build"
+  "build HOST BUILD" "Build a variant of your configuration from system.build" \
   "vm HOST" "Generate a vm for HOST" \
   "vm run HOST" "run a one-shot vm for HOST" \
   "install HOST [ARGS]" "Shortcut for nixos-install" \

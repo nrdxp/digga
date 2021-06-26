@@ -159,7 +159,13 @@ lib.systemFlake (lib.mergeAny
           ;
 
           devShell = lib.flkShell {
+            inherit system;
+            # Here, we let the flkShell flake pick its `devshell` input
             pkgs = defaultChannel;
+            
+          }
+          {
+            channelName = cfg.nixos.hostDefaults.channelName;
             devshellModules = cfg.devshell.modules ++ cfg.devshell.externalModules;
           };
 

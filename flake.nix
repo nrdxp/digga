@@ -1,6 +1,8 @@
 {
   description = "DevOS environment configuriguration library.";
 
+  nixConfig.experimental-features = "nix-command flakes ca-references";
+
   inputs =
     {
       nixpkgs.url = "github:nixos/nixpkgs";
@@ -69,10 +71,7 @@
             };
           };
 
-          flkShell =  import ./flkShell {
-            lib = combinedLib;
-            inherit deploy devshell;
-          };
+          flkShell =  import ./flkShell;
 
           inherit (attrs) mapFilterAttrs genAttrs' concatAttrs;
           inherit (lists) unifyOverlays;

@@ -72,6 +72,7 @@ lib.systemFlake (lib.mergeAny
           digga = lib;
         });
       })
+      (import ../../patchedNix)
     ];
 
     hostDefaults = lib.mergeAny (stripHost cfg.nixos.hostDefaults) {

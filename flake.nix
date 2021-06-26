@@ -101,17 +101,43 @@
     in
 
     {
-      lib = with lib; utils.lib // {
-        inherit modules importers;
-        inherit (lib)
-          mkFlake
-          mkDeployNodes
-          mkHomeConfigurations
-          ;
-        inherit (lib.tests)
-          mkTest
-          ;
-      };
+      # what you came for ...
+      lib = let
+
+        fupLib = with utils.lib; {
+
+          inherit
+           systemFlake
+           modulesFromList
+           exporters
+           ;
+
+        };
+
+        diggaLib = with lib; {
+
+          inherit
+            modules
+            importers
+            ;
+
+          inherit (lib)
+            mkFlake
+            mkDeployNodes
+            mkHomeConfigurations
+            flkShell
+            ;
+
+          inherit (lib.tests)
+            mkTest
+            ;
+
+        };
+
+      in fupLib // diggaLib;
+
+      # a little extra service ...
+      patchedNixOverlay = import ./patchedNix;
 
       # digga-local use
       jobs =     ufrContract supportedSystems ./jobs      jobsInputs;

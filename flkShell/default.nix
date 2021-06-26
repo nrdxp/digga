@@ -77,7 +77,7 @@ devshell.mkShell {
   commands = with pkgs; [
     (devos { package = flk; })
     (devos { package = ssh-show; })
-    (devos { package = nixFlakes; })
+    (devos { package = nixDiggaPatched; })
     (linter { package = nixpkgs-fmt; })
     (linter { package = editorconfig-checker; })
     # (docs { package = python3Packages.grip; }) too many deps

@@ -36,6 +36,7 @@
 
     overlays = {
       enable-deploy = deploy.overlay;
+      patched-nix = import ../patchedNix;
     };
 
     flkShell = import ./. { inputs = { inherit flkShellInputs; }; };

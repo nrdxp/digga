@@ -1,7 +1,7 @@
 {
   description = "DevOS environment configuriguration library.";
 
-  nixConfig.experimental-features = "nix-command flakes ca-references";
+  nixConfig.extra-experimental-features = "ca-references";
 
   inputs =
     {

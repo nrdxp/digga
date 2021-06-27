@@ -11,6 +11,9 @@ final: prev: {
         sha256 = "sha256-KpYSX/k7FQQWD4u4bUPFOUlPV4FyfuDy4OhgDm+bkx0=";
       })
 
+      # enable flakes by default (hey, this is a flakes first thing)
+      ./enable-flakes.patch
+
     ];
   });
 

@@ -22,7 +22,7 @@ in
 # alternative 2 --------------------------------------------------
 
 , devshell ? import inputs.devshell { inherit pkgs; }
-, flk ? import inputs.flk { inherit pkgs; }
+, flk ? inputs.flk { inherit pkgs; } inputs.self
 
 # function config ------------------------------------------------
 
@@ -33,7 +33,6 @@ in
 let
 
   hooks = import ./hooks;
-  flk' = flk { }; # use the default configuration
 
   pkgWithCategory = category: package: { inherit package category; };
   linter = pkgWithCategory "linter";
@@ -78,8 +77,7 @@ devshell.mkShell {
   ];
 
   commands = with pkgs; [
-    (devos flk')
-    (devos ssh-show)
+    (devos flk)
     (devos nixDiggaPatched)
     (linter nixpkgs-fmt)
     (linter editorconfig-checker)

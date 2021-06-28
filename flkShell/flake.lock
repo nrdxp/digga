@@ -71,6 +71,22 @@
         "type": "github"
       }
     },
+    "flk": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "narHash": "sha256-WELDpIPZrSigNR6ts0QUZRRpvTVbS3EH6eHJn8Qzr9c=",
+        "path": "../flk/",
+        "type": "path"
+      },
+      "original": {
+        "path": "../flk/",
+        "type": "path"
+      }
+    },
     "naersk": {
       "inputs": {
         "nixpkgs": [
@@ -110,6 +126,7 @@
       "inputs": {
         "deploy": "deploy",
         "devshell": "devshell",
+        "flk": "flk",
         "nixpkgs": "nixpkgs",
         "utils": "utils"
       }

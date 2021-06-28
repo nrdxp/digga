@@ -8,5 +8,5 @@ description="""
 # ---------------------------------------------------
 
 cmd () {
-  sudo nixos-rebuild --flake "$FLKROOT#$1" "${@:2}"
+  sudo nixos-rebuild --flake "$FLKROOT#\"$1\"" "${@:2}"
 }

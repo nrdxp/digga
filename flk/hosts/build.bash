@@ -8,5 +8,5 @@ description="""
 # ---------------------------------------------------
 
 cmd () {
-  nix build "$FLKROOT#nixosConfigurations.$1.config.system.build.$2" "${@:3}"
+  nix build "$FLKROOT#nixosConfigurations.\"$1\".config.system.build.$2" "${@:3}"
 }

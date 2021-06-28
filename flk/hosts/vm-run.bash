@@ -10,7 +10,7 @@ description="""
 cmd () {
   rm -rf "$FLKROOT/vm/tmp/$1"* \
   && nix build \
-    "$FLKROOT#nixosConfigurations.$1.config.system.build.vm" \
+    "$FLKROOT#nixosConfigurations.\"$1\".config.system.build.vm" \
     -o "$FLKROOT/vm/tmp/$1" \
     "${@:2}" \
   && \

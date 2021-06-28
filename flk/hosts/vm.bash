@@ -9,7 +9,7 @@ description="""
 
 cmd () {
   nix build \
-    "$FLKROOT#nixosConfigurations.$1.config.system.build.vm" \
+    "$FLKROOT#nixosConfigurations.\"$1\".config.system.build.vm" \
     -o "$FLKROOT/vm/$1" \
     "${@:2}" \
   && echo "export NIX_DISK_IMAGE=\"$FLKROOT/vm/$2.qcow2\"" > "$FLKROOT/vm/run-$1" \

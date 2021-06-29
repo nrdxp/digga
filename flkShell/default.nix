@@ -22,6 +22,7 @@ in
 # alternative 2 --------------------------------------------------
 
 , devshell ? import inputs.devshell { inherit pkgs; }
+, flk ? import inputs.flk { inherit pkgs; }
 
 # function config ------------------------------------------------
 
@@ -31,9 +32,8 @@ in
 }:
 let
 
-  flk = pkgs.callPackage ./flk { };
-  ssh-show = pkgs.callPackage ./ssh-show { };
   hooks = import ./hooks;
+  flk' = flk { }; # use the default configuration
 
   pkgWithCategory = category: package: { inherit package category; };
   linter = pkgWithCategory "linter";
@@ -78,7 +78,7 @@ devshell.mkShell {
   ];
 
   commands = with pkgs; [
-    (devos flk)
+    (devos flk')
     (devos ssh-show)
     (devos nixDiggaPatched)
     (linter nixpkgs-fmt)

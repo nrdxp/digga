@@ -1,24 +1,44 @@
-{ stdenv }:
+{ system ? builtins.currentSystem
+, inputs ? import ../ufr-polyfills/flake.lock.nix ./.
+
+# alternative 1 --------------------------------------------------
+
+, pkgs ? import inputs.nixpkgs {
+    inherit system;
+    overlays = inputs.nixpkgs.lib.optionals
+      ((inputs ? self) && ( inputs.self ? overlays))
+      (builtins.attrValues inputs.self.overlays)
+    ;
+    config = { };
+  }
+
+# function config ------------------------------------------------
+
+, flkModules ? pkgs.lib.optionals
+      ((inputs ? self) && ( inputs.self ? flkModules))
+      (builtins.attrValues inputs.self.flkModules)
+}:
 let
+
+  lib = pkgs.lib;
   name = "flk";
   description = "Build, deploy, and install NixOS";
-in
-stdenv.mkDerivation {
-  inherit name;
 
-  src = ./flk.sh;
+  flkModule = import ./module.nix;
+  stdProfile = import ./stdProfile.nix;
 
-  dontUnpack = true;
-  dontBuild = true;
+  pkgsModule = { config, ... }: {
+    config = {
+      _module.args.name = name;
+      _module.args.baseModules = [ flkModule ];
+      _module.args.pkgs = lib.mkDefault pkgs;
+    };
+  };
 
-  installPhase = ''
-    mkdir -p $out/bin
-    install $src $out/bin/${name}
-  '';
+  evaled = lib.evalModules {
+    modules = [ pkgsModule flkModule stdProfile] ++ flkModules;
+  };
 
-  checkPhase = ''
-    ${stdenv.shell} -n -O extglob $out/bin/${name}
-  '';
-
+in evaled.config.flk.cmd // {
   meta = { inherit description; };
 }

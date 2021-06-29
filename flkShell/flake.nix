@@ -3,12 +3,14 @@
 
   inputs.nixpkgs.url = "nixpkgs";
   inputs.devshell.url = "github:numtide/devshell";
+  inputs.flk.url = "path:../flk/";
+  inputs.flk.inputs.nixpkgs.follows = "nixpkgs";
   inputs.deploy.url = "github:serokell/deploy-rs";
   inputs.deploy.inputs.nixpkgs.follows = "nixpkgs";
   inputs.deploy.inputs.utils.follows = "utils";
   inputs.utils.url = "github:gytis-ivaskevicius/flake-utils-plus/staging";
 
-  outputs = { self, nixpkgs, devshell, deploy, ... }: let
+  outputs = { self, nixpkgs, devshell, deploy, flk, ... }: let
 
     # Unofficial Flakes Roadmap - Polyfills
     # .. see: https://demo.hedgedoc.org/s/_W6Ve03GK#
@@ -19,7 +21,7 @@
     ufrContract = import ../ufr-polyfills/ufrContract.nix;
 
     # Dependency Groups - Style
-    flkShellInputs = { inherit self nixpkgs devshell; };
+    flkShellInputs = { inherit self nixpkgs devshell flk; };
 
     # .. we hope you like this style.
     # .. it's adopted by a growing number of projects.

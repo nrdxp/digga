@@ -16,7 +16,7 @@
 
     # Super Stupid Flakes / System As an Input - Style:
     supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin"];
-    ufrContractCalled = import ../ufr-polyfills/ufrContractCalled.nix;
+    ufrContract = import ../ufr-polyfills/ufrContract.nix;
 
     # Dependency Groups - Style
     flkShellInputs = { inherit self nixpkgs devshell; };
@@ -35,7 +35,7 @@
 
     flkShell = import ./. { inputs = { inherit flkShellInputs; }; };
 
-    devShell = ufrContractCalled supportedSystems ./. flkShellInputs { };
+    devShell = ufrContract supportedSystems ./. flkShellInputs;
 
   };
 }

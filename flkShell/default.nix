@@ -23,11 +23,9 @@ in
 
 , devshell ? import inputs.devshell { inherit pkgs; }
 
-# ----------------------------------------------------------------
-}:
+# function config ------------------------------------------------
 
-{
-  channelName ? "no-channel"
+, channelName ? "no-channel"
 , devshellModules ? optionals ((inputs ? self) && (inputs.self ? devshellModules))
     (builtins.attrValues inputs.self.devshellModules)
 }:

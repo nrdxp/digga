@@ -1,3 +1,11 @@
+let
+  # not worth aquiring an unecesary (potentially duplicate) nixpkgs dependency
+  optionals =
+    # Condition
+    cond:
+    # List to return if condition is true
+    elems: if cond then elems else [];
+in
 { system ? builtins.currentSystem
 , inputs ? import ../ufr-polyfills/flake.lock.nix ./.
 
@@ -5,8 +13,7 @@
 
 , pkgs ? import inputs.nixpkgs {
     inherit system;
-    overlays = inputs.nixpkgs.lib.optionals
-      ((inputs ? self) && (inputs.self ? overlays))
+    overlays = optionals ((inputs ? self) && (inputs.self ? overlays))
       (builtins.attrValues inputs.self.overlays)
     ;
     config = { };
@@ -21,9 +28,8 @@
 
 {
   channelName ? "no-channel"
-, devshellModules ? pkgs.lib.optionals
-      ((inputs ? self) && (inputs.self ? devshellModules))
-      (builtins.attrValues inputs.self.devshellModules)
+, devshellModules ? optionals ((inputs ? self) && (inputs.self ? devshellModules))
+    (builtins.attrValues inputs.self.devshellModules)
 }:
 let
 
@@ -31,7 +37,7 @@ let
   ssh-show = pkgs.callPackage ./ssh-show { };
   hooks = import ./hooks;
 
-  pkgWithCategory = category: pkg: { package = pkg; inherit category; };
+  pkgWithCategory = category: package: { inherit package category; };
   linter = pkgWithCategory "linter";
   docs = pkgWithCategory "docs";
   devos = pkgWithCategory "devos";

@@ -1,7 +1,9 @@
 { inputs, system ? builtins.currentSystem }:
 let
 
-  pkgs = import inputs.nixpkgs { inherit system; config = { }; overlays = [ ]; };
+  pkgs = import inputs.nixpkgs { inherit system; config = { }; overlays = [
+    (import ./patchedNix)
+  ]; };
   devshell = import inputs.devshell { inherit pkgs system; };
 
   withCategory = category: attrset: attrset // { inherit category; };
@@ -51,32 +53,39 @@ let
       digga_fixture
 
       test -f flake.lock && lockfile_present=$? || true
-      ${patchedNixUnstable}/bin/nix flake lock --update-input digga "$@"; lockfile_updated=$?;
-      ${patchedNixUnstable}/bin/nix flake show "$@"
-      ${patchedNixUnstable}/bin/nix flake check "$@"
+      ${pkgs.nixDiggaPatched}/bin/nix flake lock --update-input digga "$@"; lockfile_updated=$?;
+      ${pkgs.nixDiggaPatched}/bin/nix flake show "$@"
+      ${pkgs.nixDiggaPatched}/bin/nix flake check "$@"
 
       cleanup
     '';
   };
 
-  patchedNixUnstable = pkgs.nixUnstable.overrideAttrs (o: {
-    patches = (o.patches or [ ]) ++ [
-      (pkgs.fetchpatch {
-        name = "fix-follows.diff";
-        url = "https://github.com/CitadelCore/nix/commit/cfef23c040c950222b3128b9da464d9fe6810d79.diff";
-        sha256 = "sha256-KpYSX/k7FQQWD4u4bUPFOUlPV4FyfuDy4OhgDm+bkx0=";
-      })
-    ];
-  });
-
 in
 devshell.mkShell {
+
   name = "digga";
+
   packages = with pkgs; [
     fd
     nixpkgs-fmt
-    patchedNixUnstable
+    nixDiggaPatched
   ];
+
+  # tempfix: remove when merged https://github.com/numtide/devshell/pull/123
+  devshell.startup.load_profiles = pkgs.lib.mkForce (pkgs.lib.noDepEntry ''
+    # PATH is devshell's exorbitant privilige:
+    # fence against its pollution
+    _PATH=''${PATH}
+    # Load installed profiles
+    for file in "$DEVSHELL_DIR/etc/profile.d/"*.sh; do
+      # If that folder doesn't exist, bash loves to return the whole glob
+      [[ -f "$file" ]] && source "$file"
+    done
+    # Exert exorbitant privilige and leave no trace
+    export PATH=''${_PATH}
+    unset _PATH
+  '');
 
   commands = [
     {
@@ -100,4 +109,5 @@ devshell.mkShell {
     (test "all" // { command = "check-downstream && check-groupByConfig"; })
 
   ];
+
 }

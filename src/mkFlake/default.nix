@@ -72,6 +72,7 @@ lib.systemFlake (lib.mergeAny
           digga = lib;
         });
       })
+      (import ../../patchedNix)
     ];
 
     hostDefaults = lib.mergeAny (stripHost cfg.nixos.hostDefaults) {
@@ -158,9 +159,15 @@ lib.systemFlake (lib.mergeAny
             )
           ;
 
-          devShell = lib.pkgs-lib.shell {
+          devShell = lib.flkShell {
+            inherit system;
+            # Here, we let the flkShell flake pick its `devshell` input
             pkgs = defaultChannel;
-            extraModules = cfg.devshell.modules ++ cfg.devshell.externalModules;
+            
+          }
+          {
+            channelName = cfg.nixos.hostDefaults.channelName;
+            devshellModules = cfg.devshell.modules ++ cfg.devshell.externalModules;
           };
 
         };

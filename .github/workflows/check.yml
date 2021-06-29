@@ -29,3 +29,15 @@ jobs:
     # Check /examples/*
     - run: nix develop --command -- check-downstream --show-trace
     - run: nix develop --command -- check-groupByConfig --show-trace
+
+    # Check /flkShell
+    - run: cd flkShell && nix develop --show-trace --command -- flk
+
+    # TODO: possible testing strategies for ssh-show command
+    # - uses: shimataro/ssh-key-action@v2
+    #   with:
+    #     key: ${{ secrets.SSH_KEY }}
+    #     known_hosts: |
+    #     <remote host>: <ssh-ed25519>
+    # - run: cd flkShell && nix develop --show-trace --command -- ssh-show-ed25519 <remote host>
+

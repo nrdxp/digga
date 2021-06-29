@@ -1,6 +1,8 @@
 {
   description = "DevOS environment configuriguration library.";
 
+  nixConfig.extra-experimental-features = "ca-references";
+
   inputs =
     {
       nixpkgs.url = "github:nixos/nixpkgs";
@@ -69,10 +71,7 @@
             };
           };
 
-          pkgs-lib = import ./src/pkgs-lib {
-            lib = combinedLib;
-            inherit deploy devshell;
-          };
+          flkShell =  import ./flkShell;
 
           inherit (attrs) mapFilterAttrs genAttrs' concatAttrs;
           inherit (lists) unifyOverlays;
@@ -102,13 +101,43 @@
     in
 
     {
-      lib = with lib; utils.lib // {
-        inherit attrs lists modules importers generators;
-        inherit (lib)
-          mkFlake
-          mkDeployNodes
-          mkHomeConfigurations;
-      };
+      # what you came for ...
+      lib = let
+
+        fupLib = with utils.lib; {
+
+          inherit
+           systemFlake
+           modulesFromList
+           exporters
+           ;
+
+        };
+
+        diggaLib = with lib; {
+
+          inherit
+            modules
+            importers
+            ;
+
+          inherit (lib)
+            mkFlake
+            mkDeployNodes
+            mkHomeConfigurations
+            flkShell
+            ;
+
+          inherit (lib.tests)
+            mkTest
+            ;
+
+        };
+
+      in fupLib // diggaLib;
+
+      # a little extra service ...
+      patchedNixOverlay = import ./patchedNix;
 
       # digga-local use
       jobs =     ufrContract supportedSystems ./jobs      jobsInputs;

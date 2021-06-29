@@ -46,7 +46,7 @@ in
 devshell.mkShell {
 
   imports = [ "${devshell.extraModulesDir}/git/hooks.nix" ] ++ devshellModules;
-{ inherit hooks; ;
+  git = { inherit hooks; };
 
   name = "flk-${channelName}";
 

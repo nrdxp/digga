@@ -6,7 +6,7 @@
 , pkgs ? import inputs.nixpkgs {
     inherit system;
     overlays = inputs.nixpkgs.lib.optionals
-      ((builtins.hasAttr "self" inputs) && (builtins.hasAttr "overlays" inputs.self))
+      ((inputs ? self) && (inputs.self ? overlays))
       (builtins.attrValues inputs.self.overlays)
     ;
     config = { };
@@ -22,7 +22,7 @@
 {
   channelName ? "no-channel"
 , devshellModules ? pkgs.lib.optionals
-      ((builtins.hasAttr "self" inputs) && (builtins.hasAttr "devshellModules" inputs.self))
+      ((inputs ? self) && (inputs.self ? devshellModules))
       (builtins.attrValues inputs.self.devshellModules)
 }:
 let
@@ -31,10 +31,10 @@ let
   ssh-show = pkgs.callPackage ./ssh-show { };
   hooks = import ./hooks;
 
-  withCategory = category: attrset: attrset // { inherit category; };
-  linter = withCategory "linter";
-  docs = withCategory "docs";
-  devos = withCategory "devos";
+  pkgWithCategory = category: pkg: { package = pkg; inherit category; };
+  linter = pkgWithCategory "linter";
+  docs = pkgWithCategory "docs";
+  devos = pkgWithCategory "devos";
 
   installPkgs = (import "${toString pkgs.path}/nixos/lib/eval-config.nix" {
     inherit (pkgs) system;
@@ -46,8 +46,7 @@ in
 devshell.mkShell {
 
   imports = [ "${devshell.extraModulesDir}/git/hooks.nix" ] ++ devshellModules;
-
-  git = { inherit hooks; };
+{ inherit hooks; ;
 
   name = "flk-${channelName}";
 
@@ -75,26 +74,26 @@ devshell.mkShell {
   ];
 
   commands = with pkgs; [
-    (devos { package = flk; })
-    (devos { package = ssh-show; })
-    (devos { package = nixDiggaPatched; })
-    (linter { package = nixpkgs-fmt; })
-    (linter { package = editorconfig-checker; })
-    # (docs { package = python3Packages.grip; }) too many deps
-    (docs { package = mdbook; })
+    (devos flk)
+    (devos ssh-show)
+    (devos nixDiggaPatched)
+    (linter nixpkgs-fmt)
+    (linter editorconfig-checker)
+    # (docs python3Packages.grip) too many deps
+    (docs mdbook)
   ]
 
   ++ lib.optional
-    (builtins.hasAttr "deploy-rs" pkgs)
-    (devos { package = deploy-rs.deploy-rs; })
+    (pkgs ? deploy-rs)
+    (devos deploy-rs.deploy-rs)
 
   ++ lib.optional
-    (builtins.hasAttr "fup-repl" pkgs)
-    (devos { package = fup-repl; })
+    (pkgs ? fup-repl)
+    (devos fup-repl)
 
   ++ lib.optional
     (system != "i686-linux")
-    (devos { package = cachix; })
+    (devos cachix)
 
   ;
 }

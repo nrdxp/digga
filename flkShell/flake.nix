@@ -1,18 +1,12 @@
 {
   description = "Flk Devshell - a user friendly devshell for devos";
 
-  inputs = {
-    nixpkgs.url = "nixpkgs";
-    devshell.url = "github:numtide/devshell";
-    deploy = {
-      url = "github:serokell/deploy-rs";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        utils.follows = "utils";
-      };
-    };
-    utils.url = "github:gytis-ivaskevicius/flake-utils-plus/staging";
-  };
+  inputs.nixpkgs.url = "nixpkgs";
+  inputs.devshell.url = "github:numtide/devshell";
+  inputs.deploy.url = "github:serokell/deploy-rs";
+  inputs.deploy.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.deploy.inputs.utils.follows = "utils";
+  inputs.utils.url = "github:gytis-ivaskevicius/flake-utils-plus/staging";
 
   outputs = { self, nixpkgs, devshell, deploy, ... }: let
 
